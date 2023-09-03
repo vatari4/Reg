@@ -1,25 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
 
-function App() {
+const App = () => {
+  const [name, setName] = useState('');
+  const [mail, setMail] = useState('');
+  const [response, setResponse] = useState('');
+
+  const sendJSON = () => {
+    const url = 'http://mihailmaximov.ru/projects/json/json.php';
+    const data = JSON.stringify({ name, mail });
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: data
+    })
+    .then(response => response.text())
+    .then(data => {
+      setResponse(data);
+    })
+    .catch(error => {
+      console.error('Ошибка:', error);
+    });
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Name" />
+      <input type="text" value={mail} onChange={e => setMail(e.target.value)} placeholder="Mail" />
+
+      <button onClick={sendJSON}>Проверить JSON</button>
+
+      <div>{response}</div>
     </div>
   );
-}
+};
 
 export default App;
